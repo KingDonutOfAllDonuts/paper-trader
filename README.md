@@ -4,7 +4,6 @@ An paper trading electron application built ElectronJS, React and TypeScript
 - Showcase: https://youtu.be/3o67xk8uMgc
 ## Summary Page
 ![alt text](Summary.png)
-
 ## Positions Page
 ![alt text](Positions.png)
 
