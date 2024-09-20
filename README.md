@@ -1,6 +1,14 @@
 # paper-trader
 
-An Electron application with React and TypeScript
+An paper trading electron application built ElectronJS, React and TypeScript
+Showcase: https://youtu.be/3o67xk8uMgc
+Summary Page
+![alt text](Summary.png)
+
+Positions Page
+![alt text](Positions.png)
+
+
 
 ## Recommended IDE Setup
 
@@ -32,3 +40,4 @@ $ yarn build:mac
 # For Linux
 $ yarn build:linux
 ```
+

@@ -1,6 +1,6 @@
 import { CandlestickData, LineData, Time } from "lightweight-charts";
 import { AccountInfo } from "./models";
-import { calculateBalance, createTransactionTimeline, getHistory, getPositionHistory, getTimestamps } from "./utils";
+import { calculateBalance, createTransactionTimeline, getCurrentStockPrice, getHistory, getPositionHistory, getTimestamps } from "./utils";
 
 export const getAccountBalanceHistory = async(acc:AccountInfo, stockData):Promise<LineData<Time>[]> => {
   const data = await getHistory(acc, "1y")
@@ -50,7 +50,7 @@ export const getAccountBalanceHistory = async(acc:AccountInfo, stockData):Promis
       if (!pos.chartData[date.getTime()]) {continue}
       value+=pos.chartData[date.getTime()].close*currentPositions[symbol]
     }
-    value+= acc.cashBalance
+    value+= currCash
     const year = date.getFullYear();
     const month = date.getMonth() + 1; 
     const day = date.getDate();

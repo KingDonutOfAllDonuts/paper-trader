@@ -1,6 +1,6 @@
 import { months } from '@shared/constants';
 import { portfolioContext } from '@shared/models';
-import { createTransactionTimeline } from '@shared/utils';
+import { createTransactionTimeline, formatNumber } from '@shared/utils';
 import React, { useState } from 'react'
 import { useOutletContext } from 'react-router-dom';
 
@@ -47,7 +47,7 @@ const History = () => {
               return <tr key={index} className="hover:bg-gray-100 border-b">
                 <td className="text-xl p-2">{date}</td>
                 <td className="text-xl p-2">{`${transaction.type == "Buy" ? "Bought" : "Sold"} ${transaction.quantity} shares of ${transaction.symbol}`}</td>
-                <td className="text-xl text-right p-2">${transaction.price*transaction.quantity}</td>
+                <td className="text-xl text-right p-2">{formatNumber(transaction.price*transaction.quantity)}</td>
               </tr> 
             })
           
