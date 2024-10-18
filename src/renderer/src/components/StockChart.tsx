@@ -1,7 +1,7 @@
 import { getStockHistory } from '@shared/chartData';
 import { months } from '@shared/constants';
 import { CandlestickData, ColorType, createChart, Time } from 'lightweight-charts';
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import LoadingSpinner from './LoadingSpinner';
 
 export type HistoryData = { // loading charts
@@ -10,19 +10,25 @@ export type HistoryData = { // loading charts
 }
 
 
-const StockChart = ({symbol, divRef, className='', height}) => {
-  const chartContainerRef = useRef<HTMLDivElement>(null);
+const StockChart = ({symbol, divRef, className='', height, period}) => {
   const [history, setHistory] = useState<HistoryData>({
     data: [],
     updating: true
   })
 
+  const chartRef= useRef<HTMLDivElement>(null)
   const {data, updating} = history
+  useEffect(() => {
+    setHistory({
+      ...history,
+      updating: true
+    })
+  }, [period, symbol])
 
   useEffect(() => {
-    if (!updating) {return}
+    //if (!updating) {return}
     //load data
-    getStockHistory(symbol, "1y")
+    getStockHistory(symbol, period)
       .then((fetchedHistory) => {
         setHistory({
           data: fetchedHistory,
@@ -37,11 +43,11 @@ const StockChart = ({symbol, divRef, className='', height}) => {
 
   //creating the chart
   useEffect(() => {
-    if (!chartContainerRef.current || data.length==0) return;
+    if (!chartRef.current || data.length==0) return;
 
-    const chart = createChart(chartContainerRef.current, {
+    const chart = createChart(chartRef.current, {
       
-      width: divRef.current.clientWidth,
+      width: divRef.current.clientWidth-1,
       height: height,
       //height: 400,
       layout: {
@@ -80,11 +86,30 @@ const StockChart = ({symbol, divRef, className='', height}) => {
 
     chart.applyOptions({
       localization: {
-        timeFormatter: (businessDay) => {
-          
+        timeFormatter: (utcTimestamp) => {
+          const date = new Date(utcTimestamp * 1000); // Convert to milliseconds
 
-          const { year, month, day } = businessDay;
-          return `${months[month - 1]} ${day}, ${year}`
+          // Array of month abbreviations
+          const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        
+          // Extract date components
+          const day = String(date.getDate()).padStart(2, '0');
+          const month = months[date.getMonth()];
+          const year = date.getFullYear();
+        
+          // Format hours and minutes
+          let hours = date.getHours();
+          const minutes = String(date.getMinutes()).padStart(2, '0');
+          const ampm = hours >= 12 ? 'PM' : 'AM';
+          
+          // Convert 24-hour format to 12-hour format
+          hours = hours % 12;
+          hours = hours ? hours : 12; // If hours is 0, set it to 12
+        
+          // Combine everything into the desired format
+          const formattedDate = `${day}-${month}-${year} ${hours}:${minutes} ${ampm}`;
+        
+          return formattedDate;
         },
       },
     });
@@ -106,7 +131,7 @@ const StockChart = ({symbol, divRef, className='', height}) => {
   }, [history]);
 
   return <>
-    <div className={className} ref={chartContainerRef} />
+    <div className={className} ref={chartRef} key={period}/>
     {updating ? <LoadingSpinner/> : ''}
   </>
 }

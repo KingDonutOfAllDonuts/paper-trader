@@ -1,4 +1,4 @@
-import { FetchStockData } from "@shared/context"
+import { FetchActiveSymbols, FetchNews, FetchStockData } from "@shared/context"
 import { Candle } from "@shared/models"
 
 declare global {
@@ -6,6 +6,8 @@ declare global {
     context: {
       ping: void
       fetchStockData: FetchStockData
+      fetchActiveSymbols: FetchActiveSymbols
+      fetchNews: FetchNews
     }
   }
 }

@@ -9,6 +9,8 @@ try {
     //TODO
     ping: () => ipcRenderer.invoke('ping'),
     fetchStockData: (...args) => ipcRenderer.invoke('fetchStockData', ...args),
+    fetchActiveSymbols: (...args) => ipcRenderer.invoke('fetchActiveSymbols', ...args),
+    fetchNews: (...args) => ipcRenderer.invoke("fetchNews", ...args)
   })
 } catch (error) {
   console.error(error)

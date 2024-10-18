@@ -44,12 +44,6 @@ const AccountBalanceChart = ({divRef, className='', acc, stockData }) => {
       
       width: divRef.current.clientWidth,
       height: 300,
-      handleScroll: {
-        mouseWheel: false,
-        pressedMouseMove: false,
-        horzTouchDrag: false,
-        vertTouchDrag: false
-      },
       //height: 400,
       layout: {
         background: {type: ColorType.Solid, color: 'white'},
@@ -83,11 +77,30 @@ const AccountBalanceChart = ({divRef, className='', acc, stockData }) => {
 
     chart.applyOptions({
       localization: {
-        timeFormatter: (businessDay) => {
-          
+        timeFormatter: (utcTimestamp) => {
+          const date = new Date(utcTimestamp * 1000); // Convert to milliseconds
 
-          const { year, month, day } = businessDay;
-          return `${months[month - 1]} ${day}, ${year}`
+          // Array of month abbreviations
+          const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        
+          // Extract date components
+          const day = String(date.getUTCDate()).padStart(2, '0');
+          const month = months[date.getUTCMonth()];
+          const year = date.getUTCFullYear();
+        
+          // Format hours and minutes
+          let hours = date.getUTCHours();
+          const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+          const ampm = hours >= 12 ? 'PM' : 'AM';
+          
+          // Convert 24-hour format to 12-hour format
+          hours = hours % 12;
+          hours = hours ? hours : 12; // If hours is 0, set it to 12
+        
+          // Combine everything into the desired format
+          const formattedDate = `${day}-${month}-${year} ${hours}:${minutes} ${ampm}`;
+        
+          return formattedDate;
         },
       },
     });

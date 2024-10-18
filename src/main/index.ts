@@ -1,9 +1,9 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import {FetchStockData} from '@shared/context'
+import {FetchNews, FetchStockData} from '@shared/context'
 import icon from '../../resources/icon.png?asset'
-import { getHistory } from './yfinance'
+import { getActiveSymbols, getHistory, getNews } from './yfinance'
 
 function createWindow(): BrowserWindow {
   // Create the browser window.
@@ -66,6 +66,8 @@ app.whenReady().then(() => {
   // IPC test
   ipcMain.handle('ping', () => console.log('pong'))
   ipcMain.handle('fetchStockData', (_, ...args: Parameters<FetchStockData>) => getHistory(...args))
+  ipcMain.handle('fetchActiveSymbols', () => getActiveSymbols())
+  ipcMain.handle('fetchNews', (_, ...args: Parameters<FetchNews>)=> getNews(...args))
 
   createWindow()
 
@@ -84,6 +86,6 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
-
+app.commandLine.appendSwitch("ignore-certificate-errors");
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.

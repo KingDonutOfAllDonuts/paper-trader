@@ -19,8 +19,8 @@ const History = () => {
   filteredTransactions.reverse()
 
   return (
-    <div className='p-4'>
-      <h1 className='text-2xl mb-4'>Transaction History</h1>
+    <div className='portfolio-size'>
+      <h1 className='text-3xl font-bold text-gray-800 mb-4'>Transaction History</h1>
 
       {/* Search Bar */}
       <input

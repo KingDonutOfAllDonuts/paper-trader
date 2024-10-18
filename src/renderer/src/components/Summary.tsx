@@ -17,7 +17,7 @@ const Summary = () => {
   .slice(0, 5);
 
   return (
-    <div className='portfolio-size flex relative'>
+    <div className='portfolio-size flex'>
       
       <div className='flex-1 flex flex-col m-2'>
         <div className='flex-1 border border-gray-300 rounded-md p-3'>

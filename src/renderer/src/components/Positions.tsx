@@ -5,6 +5,9 @@ import { useOutletContext } from 'react-router-dom'
 import Earnings from './Earnings'
 import PercentageEarnings from './PercentageEarnings'
 import StockChart from './StockChart'
+import { intervals } from '@shared/constants'
+import RefreshButton from './RefreshButton'
+import BuySellButton from './BuySellButton'
 
 const Positions = () => {
   const [acc, stockData] = useOutletContext<portfolioContext>()
@@ -14,18 +17,15 @@ const Positions = () => {
   
   let totalTodayGains = 0
   let totalGains = 0
-
+  const [currPeriod, setPeriod] = useState<String>("1y")
   const [selectedStock, setSelectedStock] = useState<String|false>(false);
   const handleSelect = (symbol:string) => {
-    console.log(selectedStock, symbol)
     if (selectedStock==symbol) {
-      console.log("a")
       setSelectedStock(false)
     } else {
       setSelectedStock(symbol)
     }
   }
-  console.log(selectedStock)
 
   const chartContainerRef = useRef<HTMLTableRowElement>(null);
 
@@ -42,7 +42,7 @@ const Positions = () => {
           <table className="min-w-full text-left table-auto">
             <thead>
               <tr className="bg-gray-200">
-                <th className="py-2 px-3">Ticker</th>
+                <th className="py-2 px-3">Symbol</th>
                 <th className="py-2 px-3">Current Price</th>
                 <th className="py-2 px-3">Today's Earnings</th>
                 <th className="py-2 px-3">Total Earnings</th>
@@ -64,7 +64,7 @@ const Positions = () => {
                   </td>
               </tr>
 
-              {acc.positions.flatMap((position, index) => {
+              {acc.positions.flatMap((position) => {
                 const currStockPrice = getCurrentStockPrice(position, stockData)
                 const todaysEarnings = calculateTodaysPositionEarning(position, stockData)
                 const boughtValue = calculateBoughtValue(acc, position)
@@ -105,10 +105,50 @@ const Positions = () => {
               
                   position.symbol === selectedStock && (
                     <tr key={`${position.symbol}-chart`}>
-                      <td colSpan={7}> {/* Adjust colspan to match the number of columns */}
-                        <div ref={chartContainerRef} className='h-[300px] w-[calc(100vw-16px)] '>
-                          <StockChart symbol={position.symbol} divRef={chartContainerRef} height={300}/>
+                      <td colSpan={6}>
+                        <div ref={chartContainerRef} className='h-[300px]'>
+                          <StockChart className='absolute' symbol={position.symbol} divRef={chartContainerRef} height={300} period={currPeriod}/>
                         </div>
+                      </td>
+
+                      <td colSpan={1} className='m-1 border flex flex-col'>
+                        <div className='flex items-center flex-col'>
+                          <h3 className="text-xl">Actions</h3>
+                          <BuySellButton className='border-b justify-center flex flex-nowrap w-full' symbol={position.symbol}/>
+                          <h3 className="text-xl mt-2">Information</h3>
+                          <div className='w-full'>
+                            <div className='flex items-start flex-col w-full'>
+                              <div className='flex justify-between pb-1 w-full'>
+                                <p className='text-base'>Value:</p>
+                                <div className='text-base'>{formatNumber(currStockPrice)}</div>
+                              </div>
+                              <div className='flex justify-between pb-1 w-full'>
+                                <p className='text-base'>1 day:</p>
+                                <Earnings className='text-base' earnings={todaysEarnings}/>
+                              </div>
+                              <div className='flex justify-between pb-1 w-full'>
+                                <p className='text-base'>Name:</p>
+                                <p className='text-base'>{stockData[position.symbol]["shortName"]}</p>
+                              </div>
+                              <div className='flex justify-between pb-1 w-full'>
+                                <p className='text-base'>Holding:</p>
+                                <p className='text-base'>{position.quantity} Shares</p>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="mt-2 flex flex-nowrap pb-2 border-b w-full justify-center">
+                            {Object.keys(intervals).map((period, i) => {
+                              return <button 
+                              key={i} 
+                              className={`text-sm ${currPeriod == period ? 'bg-blue-600' : 'bg-blue-500'} text-white rounded-md p-1 mr-0.5 hover:bg-blue-600`}
+                              onClick={() => setPeriod(period)}
+                              >
+                               {period.toUpperCase()}
+                              </button>
+                            })}
+                          </div>
+                        </div>
+
                       </td>
                     </tr>
                   )

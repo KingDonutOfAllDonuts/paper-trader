@@ -5,6 +5,7 @@ import Portfolio from './pages/Portfolio';
 import Summary from './components/Summary';
 import Positions from './components/Positions';
 import History from './components/History';
+import StockInformation from './pages/StockInformation';
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
             <Route path="positions" element={<Positions />} />
             <Route path="history" element={<History />} />
           </Route>
+          <Route path="/stock/:symbol" element={<StockInformation />} />
 
           
         </Routes>

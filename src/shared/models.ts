@@ -49,3 +49,8 @@ export type AccountData = {
 }
 
 export type portfolioContext = [acc: AccountInfo, stockData: Object| undefined];
+
+export type Stock = {
+  symbol: string
+  name: string
+}

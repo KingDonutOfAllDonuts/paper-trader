@@ -1,4 +1,4 @@
-import { CandlestickData, LineData, Time } from "lightweight-charts";
+import { CandlestickData, LineData, Time, UTCTimestamp } from "lightweight-charts";
 import { AccountInfo } from "./models";
 import { calculateBalance, createTransactionTimeline, getCurrentStockPrice, getHistory, getPositionHistory, getTimestamps } from "./utils";
 
@@ -7,43 +7,42 @@ export const getAccountBalanceHistory = async(acc:AccountInfo, stockData):Promis
   const timeStamps = await getTimestamps("1y")
 
   const accountData:LineData<Time>[]  = []
-  // get every week data
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());  
-  let i = 0
-  let todayIncluded = false;
-
   //follow positions
   const transactions = createTransactionTimeline(acc)
   let currentPositions = {};
-  let currCash = acc.startingCash; 
+  let currCash = acc.startingCash;
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  let todayIncluded=false
 
   for (const date of timeStamps) {
     if (date >= today) {todayIncluded=true; break}
     if (acc.accountCreationDate > date.getTime()) {continue}
+
+    //date.setUTCFullYear(date.getFullYear(), date.getMonth(), date.getDate())
     
     //update follow positions
     while (transactions.length && transactions[0].date <= date) {
-      const transaction = transactions.shift(); // Get and remove the earliest transaction
+      const transaction = transactions.shift();
       const { symbol, type, quantity, price } = transaction;
 
       if (type === 'Buy') {
         if (!currentPositions[symbol]) {
-          currentPositions[symbol] = 0; // Initialize the position if it's the first buy
+          currentPositions[symbol] = 0; 
         }
-        currentPositions[symbol] += quantity; // Increase position by quantity bought
-        currCash -= quantity * price; // Decrease cash balance by the total buy price
+        currentPositions[symbol] += quantity; 
+        currCash -= quantity * price;
       } else if (type === 'Sell') {
-        currentPositions[symbol] -= quantity; // Decrease position by quantity sold
-        currCash += quantity * price; // Increase cash balance by the total sell price
+        currentPositions[symbol] -= quantity; 
+        currCash += quantity * price; 
 
-        // If the position is completely sold, remove it
         if (currentPositions[symbol] <= 0) {
           delete currentPositions[symbol];
         }
       }
     }
 
+    //get todays value
     let value = 0
     for (const symbol in currentPositions) {
       const pos = data[symbol]
@@ -51,22 +50,20 @@ export const getAccountBalanceHistory = async(acc:AccountInfo, stockData):Promis
       value+=pos.chartData[date.getTime()].close*currentPositions[symbol]
     }
     value+= currCash
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1; 
-    const day = date.getDate();
+    const time = Math.floor(date.getTime() / 1000) as UTCTimestamp
     accountData.push(
       {
         color: "#000000",
-        time:  {year, month, day},
+        time: time, 
         value: value
       }
     )
   }
-  if (todayIncluded) {
+  if (todayIncluded) {//maybe remove idk
     accountData.push(
       {
         color: "#000000",
-        time:  {year:today.getFullYear(), month:today.getMonth()+1, day:today.getDate()},
+        time:  (Math.floor(today.getTime()/ 1000) as UTCTimestamp),
         value: calculateBalance(acc, stockData)
       }
     )
@@ -82,12 +79,10 @@ export const getStockHistory = async(symbol:String, period):Promise<CandlestickD
   for (const d in chartData) {
     const dateData = chartData[d]
     const date = new Date(parseInt(d))
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1; 
-    const day = date.getDate();
+    const time = Math.floor(date.getTime() / 1000) as UTCTimestamp
     stockData.push(
       {
-        time: {year, month, day},
+        time: time, 
         open: dateData.open,
         close: dateData.close,
         high: dateData.high,

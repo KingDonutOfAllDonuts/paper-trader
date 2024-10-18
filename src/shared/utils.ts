@@ -10,7 +10,7 @@ export const getPositionHistory = async(symbol, period): Promise<FetchedData> =>
     interval: intervals[period],
     period: period
   })
-  while (data==null) {    
+  while (typeof data === 'number') {    
     await sleep(1000)  
     data = await window.context.fetchStockData({
       symbol: symbol,
@@ -19,6 +19,16 @@ export const getPositionHistory = async(symbol, period): Promise<FetchedData> =>
     })
   }
   return data
+}
+
+export const positionExists = async(symbol): Promise<boolean> => {
+  let data = await window.context.fetchStockData({
+    symbol: symbol,
+    interval: intervals["1d"],
+    period: "1d"
+  })
+  console.log(data)
+  return typeof data !== 'number'
 }
 
 export const getHistory = async(acc, period) => {
@@ -72,17 +82,17 @@ export const calculateTodaysEarning = (acc, stockData) => {
 }
 
 export const calculateTodaysPositionEarning = (pos, stockData) => {
-  const metaData = stockData[pos.symbol]
+  const metaData = stockData["regularMarketPrice"]!=null ? stockData : stockData[pos.symbol]
   return metaData["regularMarketPrice"]-metaData["previousClose"]
 }
 
 export const calculateTotalPositionEarning = (pos, stockData) => {
-  const metaData = stockData[pos.symbol]
+  const metaData = stockData["regularMarketPrice"]!=null ? stockData : stockData[pos.symbol]
   return metaData["regularMarketPrice"]-metaData["previousClose"]
 }
 
 export const getCurrentStockPrice = (pos, stockData) => {
-  return stockData[pos.symbol]["regularMarketPrice"]
+  return (stockData["regularMarketPrice"]!=null ? stockData : stockData[pos.symbol])["regularMarketPrice"]
 }
 
 export const createTransactionTimeline = (acc) => {
