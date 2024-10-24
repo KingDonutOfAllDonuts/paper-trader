@@ -5,7 +5,7 @@ import StockChart from "@renderer/components/StockChart";
 import { accountDataAtom, activeStocksAtom } from "@renderer/store";
 import { intervals } from "@shared/constants";
 import { FetchedNewsData } from "@shared/context";
-import { calculateTodaysEarning, calculateTodaysPositionEarning, formatNumber, getCurrentStockPrice, getPositionHistory, positionExists } from "@shared/utils";
+import {calculateTodaysPositionEarning, formatNumber, getCurrentStockPrice, getPositionHistory, positionExists } from "@renderer/store/utils";
 import { useAtomValue } from "jotai";
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -25,7 +25,6 @@ const StockInfoPage = () => {
     positionExists(symbol).then((fetched)=>{
       if (!fetched) {setExists(1); return} else {setExists(0)}
       //load data
-      console.log("bru")
       getPositionHistory(symbol, "1d")
       .then((fetchedHistory) => {
         setStockData(fetchedHistory.metaData); // Update state with fetched history

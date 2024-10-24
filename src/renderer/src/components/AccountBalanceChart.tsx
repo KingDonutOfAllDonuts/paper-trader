@@ -1,4 +1,4 @@
-import { getAccountBalanceHistory } from "@shared/chartData";
+import { getAccountBalanceHistory } from "@renderer/store/chartData";
 import { ColorType, createChart, LineData, Time } from "lightweight-charts";
 import React, {useEffect, useRef, useState} from "react";
 import LoadingSpinner from "./LoadingSpinner";

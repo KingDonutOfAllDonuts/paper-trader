@@ -1,6 +1,6 @@
 import { CandlestickData, LineData, Time, UTCTimestamp } from "lightweight-charts";
-import { AccountInfo } from "./models";
-import { calculateBalance, createTransactionTimeline, getCurrentStockPrice, getHistory, getPositionHistory, getTimestamps } from "./utils";
+import { AccountInfo } from "../../../shared/models";
+import { calculateBalance, createTransactionTimeline, getHistory, getPositionHistory, getTimestamps } from "./utils";
 
 export const getAccountBalanceHistory = async(acc:AccountInfo, stockData):Promise<LineData<Time>[]> => {
   const data = await getHistory(acc, "1y")

@@ -1,12 +1,11 @@
-import { portfolioContext, Position } from '@shared/models'
-import { calculateBalance, calculateBoughtValue, calculateTodaysEarning, calculateTodaysPositionEarning, createTransactionTimeline, formatNumber, getCurrentStockPrice } from '@shared/utils'
-import React, { useEffect, useRef, useState } from 'react'
+import { portfolioContext } from '@shared/models'
+import { calculateBalance, calculateBoughtValue, calculateTodaysPositionEarning, formatNumber, getCurrentStockPrice } from '@renderer/store/utils'
+import {useRef, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import Earnings from './Earnings'
 import PercentageEarnings from './PercentageEarnings'
 import StockChart from './StockChart'
 import { intervals } from '@shared/constants'
-import RefreshButton from './RefreshButton'
 import BuySellButton from './BuySellButton'
 
 const Positions = () => {

@@ -1,4 +1,4 @@
-import { formatPercentage } from '@shared/utils'
+import { formatPercentage } from '@renderer/store/utils'
 import React from 'react'
 import { twMerge } from 'tailwind-merge'
 

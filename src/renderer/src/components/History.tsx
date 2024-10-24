@@ -1,6 +1,6 @@
 import { months } from '@shared/constants';
 import { portfolioContext } from '@shared/models';
-import { createTransactionTimeline, formatNumber } from '@shared/utils';
+import { createTransactionTimeline, formatNumber } from '@renderer/store/utils';
 import React, { useState } from 'react'
 import { useOutletContext } from 'react-router-dom';
 

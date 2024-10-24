@@ -2,7 +2,7 @@ import { atom, useSetAtom} from "jotai";
 import { mockAccounts } from "./mock";
 import { AccountData, AccountInfo, Stock } from "@shared/models";
 import {unwrap} from 'jotai/utils'
-import { getHistory } from "@shared/utils";
+import { getHistory } from "@renderer/store/utils";
 
 const updateAcc = async(acc, stockData = {}) => {
   
@@ -17,7 +17,7 @@ const updateAcc = async(acc, stockData = {}) => {
 }
 
 const loadAccounts= async() => {
-  const accounts = mockAccounts;
+  const accounts = await window.context.getAccountData();
   accounts.sort((a, b) => b.lastAction - a.lastAction)
   const stockData = {}
 
@@ -34,31 +34,28 @@ const loadAccounts= async() => {
 }
 
 const getActiveStocks = async () => {
-  const stocks = await window.context.fetchActiveSymbols()
-  if (stocks != null) {
-    return stocks;
-  } else {
-    console.log("failed to fetch ")
-    return null
-  }
+  return window.context.fetchActiveSymbols()
+  .then((stocks) => {
+    if (stocks != null) {
+      return stocks;
+    } else {
+      console.log("failed to fetch ")
+      return null
+    }
+  })
+  .catch((error) => {
+    console.log("Failed to fetch symbols "+error)
+  })
 };
 
 //store
-const activeStocksAsync = atom<Promise<Stock[] | null>>(getActiveStocks())
+const activeStocksAsync = atom<Promise<Stock[] | null | void>>(getActiveStocks())
 export const activeStocksAtom = unwrap(activeStocksAsync)
 
 const accountDataAtomAsync = atom<AccountData | Promise<AccountData>>(loadAccounts())
 export const accountDataAtom = unwrap(accountDataAtomAsync)
 export const selectedIndexAtom = atom<number|null>(null)
 //updating data
-
-const getAccountFromName = (accounts, name) => {
-  for (const acc of accounts) {
-    if (acc.name == name) {
-      return acc
-    }
-  }
-}
 
 export const updateAllAccountsAtom = atom(null, async(get, set) => {
   const data = get(accountDataAtom)

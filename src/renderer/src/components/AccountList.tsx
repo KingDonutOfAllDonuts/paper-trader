@@ -1,7 +1,7 @@
 import React from 'react'
 import {VscAccount} from 'react-icons/vsc'
 import { Link } from 'react-router-dom'
-import { calculateBalance, calculateTodaysEarning, formatNumber } from '@shared/utils'
+import { calculateBalance, calculateTodaysEarning, formatNumber } from '@renderer/store/utils'
 import { accountDataAtom, selectedIndexAtom } from '@renderer/store'
 import LoadingSpinner from '@renderer/components/LoadingSpinner'
 import { useAtomValue, useSetAtom } from 'jotai'
@@ -13,7 +13,7 @@ const AccountList = () => {
   const stockData = data?.stockData
   const setSelectedIndex = useSetAtom(selectedIndexAtom)
   return (
-    <div className='flex flex-col flex-1 rounded-md border-2 m-5 border-zinc-700 overflow-y-auto'>
+    <div className='flex flex-col flex-1 rounded-md border-2 m-5 border-zinc-700 overflow-y-auto custom-scrollbar'>
         {data==null||data.isUpdating ? <LoadingSpinner/> : ''}
         {data ? 
           data.accounts.map((acc, i) => {
@@ -25,7 +25,7 @@ const AccountList = () => {
             to="/portfolio/summary" 
             className='flex justify-start items-center cursor-pointer w-calc(100%-10px) p-1 m-2.5 rounded-md hover:bg-blue-200 bg-blue-100 h-20 sm:h-20 md:h-28 lg:h-32'
           >
-            <div className= {'flex flex-col flex-1 h-full'}>
+            <div className= {'flex flex-col h-24 w-full'}>
   
               <div className='flex justify-normal whitespace-nowrap overflow-hidden'>
                 <VscAccount className='h-8 sm:h-8 md:h-12 lg:h-14 w-8 sm:w-8 md:w-12 lg:w-14 m-1'/>

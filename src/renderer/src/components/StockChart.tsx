@@ -1,4 +1,4 @@
-import { getStockHistory } from '@shared/chartData';
+import { getStockHistory } from '@renderer/store/chartData';
 import { months } from '@shared/constants';
 import { CandlestickData, ColorType, createChart, Time } from 'lightweight-charts';
 import { useEffect, useRef, useState } from 'react'

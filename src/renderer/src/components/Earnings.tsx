@@ -1,4 +1,4 @@
-import { formatNumber } from '@shared/utils'
+import { formatNumber } from '@renderer/store/utils'
 import { twMerge } from 'tailwind-merge'
 
 const Earnings = ({className='', earnings}) => {

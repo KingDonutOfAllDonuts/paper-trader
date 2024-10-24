@@ -7,7 +7,8 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()],
     resolve: {
       alias: {
-        '@/lib': resolve('src/main/lib'),
+        '@/store': resolve('src/main/store'),
+        '@/yfinance': resolve('src/main/yfinance'),
         '@shared': resolve('src/shared')
       }
     }

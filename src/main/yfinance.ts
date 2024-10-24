@@ -43,6 +43,7 @@ const extractChartData = (data) => {
   const metaData = data.chart.result[0].meta;
   ///console.log(data.chart.result)
   const length  = timeStamp.length;
+  if (!timeStamp) {return 0}
   let candleData:CandleData = {}
   for(let i =0 ; i < length; i++) {
       if(indicators.open[i] !== null) {
@@ -156,6 +157,7 @@ export const getNews=async(stock: string): Promise<FetchedNewsData[]>=> {
           link, // Include the link in the output
         });
       }
+      return true;
     });
     
     return newsParsed;

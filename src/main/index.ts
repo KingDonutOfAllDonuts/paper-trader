@@ -1,9 +1,10 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import {FetchNews, FetchStockData} from '@shared/context'
+import {BuyStock, CreateAccount, DeleteAccount, FetchNews, FetchStockData, GetAccountData, SellStock} from '@shared/context'
 import icon from '../../resources/icon.png?asset'
-import { getActiveSymbols, getHistory, getNews } from './yfinance'
+import { getActiveSymbols, getHistory, getNews } from '@/yfinance'
+import { buyStock, createAccount, deleteAccount, getAccountData, sellStock } from '@/store'
 
 function createWindow(): BrowserWindow {
   // Create the browser window.
@@ -68,6 +69,12 @@ app.whenReady().then(() => {
   ipcMain.handle('fetchStockData', (_, ...args: Parameters<FetchStockData>) => getHistory(...args))
   ipcMain.handle('fetchActiveSymbols', () => getActiveSymbols())
   ipcMain.handle('fetchNews', (_, ...args: Parameters<FetchNews>)=> getNews(...args))
+
+  ipcMain.handle('getAccountData', (_, ...args: Parameters<GetAccountData>)=> getAccountData(...args))
+  ipcMain.handle('createAccount', (_, ...args: Parameters<CreateAccount>)=> createAccount(...args))
+  ipcMain.handle('deleteAccount', (_, ...args: Parameters<DeleteAccount>)=> deleteAccount(...args))
+  ipcMain.handle('buyStock', (_, ...args: Parameters<BuyStock>)=> buyStock(...args))
+  ipcMain.handle('sellStock', (_, ...args: Parameters<SellStock>)=> sellStock(...args))
 
   createWindow()
 

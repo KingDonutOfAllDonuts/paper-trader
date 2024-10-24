@@ -2,7 +2,7 @@ import { portfolioContext } from '@shared/models'
 import React, { useRef } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import AccountBalanceChart from './AccountBalanceChart'
-import { calculateBalance, calculateTodaysPositionEarning, formatNumber, getCurrentStockPrice } from '@shared/utils'
+import { calculateBalance, calculateTodaysPositionEarning, formatNumber, getCurrentStockPrice } from '@renderer/store/utils'
 import Earnings from './Earnings'
 import PercentageEarnings from './PercentageEarnings'
 

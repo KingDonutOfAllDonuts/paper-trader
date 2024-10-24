@@ -1,13 +1,11 @@
-import { LineData, Time } from "lightweight-charts";
-
 type BuyTransaction = Position & {
   purchasePrice: number
-  purchaseDate: string
+  purchaseDate: string|number
 };
 
 type SellTransaction = Position & {
   sellPrice: number
-  sellDate: string
+  sellDate: string|number
 };
 
 export type Position = {

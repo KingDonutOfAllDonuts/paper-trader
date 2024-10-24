@@ -1,15 +1,17 @@
-import { formatNumber, getCurrentStockPrice, getPositionHistory } from '@shared/utils';
-import React, { useEffect, useState } from 'react';
-import LoadingSpinner from './LoadingSpinner';
+import { formatNumber, getCurrentStockPrice, getPositionHistory } from '@renderer/store/utils';
+import React, { useEffect, useState } from 'react'
+import LoadingSpinner from '../LoadingSpinner';
+import LoadingDots from '../LoadingDots';
 
-const BuyStockPopup = ({ onSubmit, isOpen, symbol, onClose }) => {
+const SellStockPopup = ({onSubmit, isOpen, symbol, onClose, accName, currentShares}) => {
   const [numShares, setNumShares] = useState(1);
   const [stockPrice, setStockPrice] = useState<number>(-1)
   // Calculate total cost
   const totalCost = numShares*stockPrice;
 
   useEffect(() => {
-    if (!symbol) {return}
+    if (!symbol || !isOpen) {return}
+    setStockPrice(-1)
     getPositionHistory(symbol, "1d")
       .then((fetchedHistory) => {
         setStockPrice(getCurrentStockPrice(null, fetchedHistory.metaData)); // Update state with fetched history
@@ -17,12 +19,13 @@ const BuyStockPopup = ({ onSubmit, isOpen, symbol, onClose }) => {
       .catch((error) => {
         console.error('Error fetching history:', error);
       });
-  }, [symbol])
+  }, [isOpen])
   // Handle form submission
   const handleSubmit = (e) => {
+    if (stockPrice==-1) {return}
     e.preventDefault();
     // Submit the order
-    onSubmit({ symbol, numShares, totalCost });
+    onSubmit({ symbol, numShares });
     onClose()
   };
 
@@ -38,10 +41,22 @@ const BuyStockPopup = ({ onSubmit, isOpen, symbol, onClose }) => {
           &times;
         </button>
 
-        <h2 className="text-xl font-semibold mb-4">Buy Stock</h2>
+        <h2 className="text-xl font-semibold mb-4">Sell Stock</h2>
 
         {/* Stock purchase form */}
         <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-2">
+              Account: {accName}
+            </label>
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-2">
+              Current Shares Held: {currentShares}
+            </label>
+          </div>
+
+
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2">
               Stock Symbol
@@ -72,20 +87,20 @@ const BuyStockPopup = ({ onSubmit, isOpen, symbol, onClose }) => {
           </div>
 
           <div className="mb-4">
-            <p className="text-sm font-medium">Estimated Cost: {formatNumber(totalCost)}</p>
+            <p className="text-sm font-medium text-green-600">Estimated Earnings: {stockPrice == -1 ?  'Loading...': formatNumber(totalCost)}</p>
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white rounded-md p-2 hover:bg-blue-700"
+            className="w-full bg-blue-600 text-white rounded-md p-2 hover:bg-red-500 h-10"
           >
-            Place Order
+            {stockPrice == -1 ? <LoadingDots/> : 'Sell Stocks'}
           </button>
         </form>
       </div>
       {stockPrice == -1 ? <LoadingSpinner/> : ''}
     </div>
   );
-};
+}
 
-export default BuyStockPopup
+export default SellStockPopup

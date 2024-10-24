@@ -1,8 +1,5 @@
-import { webContents } from "electron";
-import { LineData, Time } from "lightweight-charts";
-import { AccountInfo, CandleData } from "./models";
-import { FetchedData, FetchStockData } from "./context";
-import { intervals } from "./constants";
+import { FetchedData } from "@shared/context";
+import { intervals } from "@shared/constants";
 
 export const getPositionHistory = async(symbol, period): Promise<FetchedData> => {
   let data = await window.context.fetchStockData({
