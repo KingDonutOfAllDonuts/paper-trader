@@ -13,11 +13,21 @@ export const getAccountBalanceHistory = async(acc:AccountInfo, stockData):Promis
   let currCash = acc.startingCash;
   const now = new Date()
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const lastYear = new Date(now.getFullYear()-1, now.getMonth(), now.getDate());
+  if (acc.accountCreationDate>lastYear.getTime()) {
+    accountData.push(
+      {
+        color: "#000000",
+        time:  (Math.floor(acc.accountCreationDate/ 1000) as UTCTimestamp),
+        value: currCash
+      }
+    )
+  } 
   let todayIncluded=false
 
   for (const date of timeStamps) {
-    if (date >= today) {todayIncluded=true; break}
     if (acc.accountCreationDate > date.getTime()) {continue}
+    if (date >= today) {todayIncluded=true; break}
 
     //date.setUTCFullYear(date.getFullYear(), date.getMonth(), date.getDate())
     
